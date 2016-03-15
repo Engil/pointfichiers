@@ -7,10 +7,10 @@ let color_of_int = function
   | 0 -> `White
   | 1 -> `Red
   | 2 -> `Blue
-  | 3 -> `Green
-  | 4 -> `Yellow
-  | 5 -> `Magenta
-  | 6 -> `Cyan
+  | 5 -> `Green
+  | 3 -> `Yellow
+  | 6 -> `Magenta
+  | 4 -> `Cyan
   | _ -> `Yellow
 
 let color a s =
