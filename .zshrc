@@ -36,3 +36,5 @@ export MANPAGER=/usr/bin/most
 
 eval `opam config env`
 precmd () {print -Pn "\e]0;%n:%~ on %m\a"}
+
+alias ls='ls --color=auto'
