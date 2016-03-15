@@ -36,4 +36,4 @@ let () =
   let host_circle = color (pick_color h) circle in
   let login = Unix.getlogin() in
   let user_circle = if login = "root" then color `Red circle else color (pick_color login) circle in
-  host_circle ^ user_circle ^ " " |> print_endline
+  host_circle ^ user_circle |> Printf.printf "%s "

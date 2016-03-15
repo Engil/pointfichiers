@@ -1,5 +1,9 @@
-ln -s nvim ~/.config/nvim
-ln -s .zshrc ~/.zshrc
+ln -s `pwd`/nvim ~/.config/nvim
+cd ~/.config/nvim
+git submodule init
+git submodule update
+cd -
+ln -s `pwd`/.zshrc ~/.zshrc
 cd prompt
 ocamlbuild -pkg unix prompt.byte
 cd ..
