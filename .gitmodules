@@ -1,0 +1,9 @@
+[submodule "nvim/bundle/elm"]
+	path = nvim/bundle/elm
+	url = https://github.com/lambdatoast/elm.vim.git
+[submodule "nvim/bundle/commenter"]
+	path = nvim/bundle/commenter
+	url = https://github.com/scrooloose/nerdcommenter.git
+[submodule "nvim/bundle/syntastic"]
+	path = nvim/bundle/syntastic
+	url = https://github.com/scrooloose/syntastic.git
