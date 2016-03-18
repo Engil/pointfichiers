@@ -19,7 +19,8 @@ bindkey "^[[A" history-search-backward
 bindkey "^[[B" history-search-forward
 
 alias grep='grep --color=auto'
-alias ne='nvim'
+alias dne='emacs --daemon'
+alias ne='emacsclient -t'
 alias vim='nvim'
 
 bindkey "^S" push-line
