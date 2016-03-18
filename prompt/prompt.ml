@@ -3,37 +3,18 @@ let white_circle = "○"
 let triangle = "▲"
 let square = "◼"
 
-let color_of_int = function
-  | 0 -> `White
-  | 1 -> `Red
-  | 2 -> `Blue
-  | 5 -> `Green
-  | 3 -> `Yellow
-  | 6 -> `Magenta
-  | 4 -> `Cyan
-  | _ -> `Yellow
-
 let color a s =
-  let attr = match a with
-  | `White -> "white"
-  | `Red -> "red"
-  | `Blue -> "blue"
-  | `Green -> "green"
-  | `Yellow -> "yellow"
-  | `Magenta -> "magenta"
-  | `Cyan -> "cyan" in
-  Printf.sprintf "$fg_no_bold[%s]%s$reset_color" attr s
-
-
+  Printf.sprintf "%%{%%F{%s}%%}%s%%{$reset_color%%}" a s
 
 let pick_color s =
   let seed = Hashtbl.hash s in
   Random.init seed;
-  Random.int 8 |> color_of_int
+  Random.int 255 |> string_of_int
 
 let () =
   let h = Unix.gethostname () in
   let host_circle = color (pick_color h) circle in
   let login = Unix.getlogin() in
-  let user_circle = if login = "root" then color `Red circle else color (pick_color login) circle in
-  host_circle ^ user_circle |> Printf.printf "%s "
+  let user_circle = if login = "root" then color "red" circle else color (pick_color login) circle in
+  let pwd = color "black" "%{$fg_bold[black]%}$(get_pwd)" in
+  Printf.printf "%s%s %s " user_circle host_circle pwd

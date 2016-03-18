@@ -30,8 +30,11 @@ zstyle ':completion:*:*:kill:*:processes' list-colors "=(#b) #([0-9]#)*=36=31"
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
-PROMPT=`oprompt`
+function get_pwd() {
+  echo "${PWD/$HOME/~}"
+}
 
+PROMPT=`oprompt`
 export MANPAGER=/usr/bin/most
 
 eval `opam config env`
