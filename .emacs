@@ -1,4 +1,5 @@
 (menu-bar-mode -1)
+;;(scroll-bar-mode -1)
 (hl-line-mode t)
 (require 'package)
 (add-to-list 'package-archives
@@ -8,6 +9,11 @@
 (line-number-mode t)
 (evil-mode t)
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property (point) 'read-face-name)
+                  (get-char-property (point) 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 (deftheme ians  "My own Emacs color theme")
 (let ((class '((class color) (min-colors 8))))
   (custom-theme-set-faces
@@ -20,7 +26,7 @@
    `(font-lock-builtin-face ((,class (:foreground "green"))))
    `(font-lock-constant-face ((,class (:foreground "cyan"))))
    `(font-lock-keyword-face ((,class (:foreground "brightred"))))
-   `(font-lock-string-face ((,class (:foreground "white"))))
+   `(font-lock-string-face ((,class (:foreground "brightblue"))))
    `(font-lock-comment-face ((,class (:foreground "white"))))
    `(font-lock-warning-face ((,class (:foreground "red"))))
    `(font-lock-number-face ((,class (:foreground "red"))))
@@ -28,8 +34,19 @@
    `(font-lock-variable-name-face ((,class (:foreground "yellow"))))
    `(font-lock-function-name-face ((,class (:foreground "green"))))
    `(font-lock-constant-face ((,class (:foreground "yellow"))))
+   `(tuareg-font-lock-governing-face ((,class (:foreground "brightyellow"))))
+   `(tuareg-font-lock-operator-face ((,class (:foreground "brightred"))))
+   `(tuareg-font-lock-module-face ((,class (:foreground "white"))))
+   `(font-lock-variable-name-face ((,class (:foreground "yellow"))))
+   `(font-lock-warning-face ((,class (:foreground "white"))))
+   `(font-lock-warning-face ((,class (:background "red"))))
    `(font-lock-warning-face ((,class (:foreground "red"))))))
 (provide-theme 'ians)
+
+(require 'whitespace)
+(setq whitespace-style '(face empty tabs lines-tail trailing))
+(global-whitespace-mode t)
+
 (autoload 'python-mode "python-mode" "Python Mode." t)
 (add-to-list 'auto-mode-alist '("\\.py\\'" . python-mode))
 (add-to-list 'interpreter-mode-alist '("python" . python-mode))
@@ -86,4 +103,68 @@
 (unless (server-running-p)
   (server-start))
 
-(global-set-key (kbd "M-o") 'company-complete)
+(add-to-list 'load-path "~/tidal")
+(require 'haskell-mode)
+(require 'tidal)
+
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   backup-directory-alist
+    '(("." . "~/.saves"))    ; don't litter my fs tree
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2
+   version-control t)       ; use versioned backups
+
+(use-package irony
+  :ensure t
+  :defer t
+  :init
+  (add-hook 'c++-mode-hook 'irony-mode)
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'objc-mode-hook 'irony-mode)
+  :config
+  ;; replace the `completion-at-point' and `complete-symbol' bindings in
+  ;; irony-mode's buffers by irony-mode's function
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
+  (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  )
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(safe-local-variable-values
+   (quote
+    ((company-clang-arguments "-I/Users/engil/Dev/mbedtls/include/mbedtls")))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+(add-hook 'c++-mode-hook 'irony-mode)
+(add-hook 'c-mode-hook 'irony-mode)
+(add-hook 'objc-mode-hook 'irony-mode)
+
+;; replace the `completion-at-point' and `complete-symbol' bindings in
+;; irony-mode's buffers by irony-mode's function
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map [remap completion-at-point]
+    'irony-completion-at-point-async)
+  (define-key irony-mode-map [remap complete-symbol]
+    'irony-completion-at-point-async))
+(add-hook 'irony-mode-hook 'my-irony-mode-hook)
+(add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+
+(setq load-path (cons "/usr/local/share/gtags" load-path))
+(autoload 'gtags-mode "gtags" "" t)
+
+(setq save-place-file "~/.emacs.d/saveplace") ;; keep my ~/ clean
+(setq-default save-place t)                   ;; activate it for all buffers
+(require 'saveplace)                          ;; get the package

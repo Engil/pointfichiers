@@ -6,15 +6,17 @@ let square = "◼"
 let color a s =
   Printf.sprintf "%%{%%F{%s}%%}%s%%{$reset_color%%}" a s
 
-let pick_color s =
-  let seed = Hashtbl.hash s in
-  Random.init seed;
+let pick_color _ =
+  Random.self_init ();
   Random.int 255 |> string_of_int
 
 let () =
-  let h = Unix.gethostname () in
-  let host_circle = color (pick_color h) circle in
-  let login = Unix.getlogin() in
-  let user_circle = if login = "root" then color "red" circle else color (pick_color login) circle in
-  let pwd = color "black" "%{$fg_bold[black]%}$(get_pwd)" in
-  Printf.printf "%s%s %s " user_circle host_circle pwd
+  let clrs =
+    [
+      color (pick_color ()) circle;
+      color (pick_color ()) circle;
+      color (pick_color ()) circle;
+      color (pick_color ()) circle;
+    ] in
+  let prompt = List.fold_left (^) "" clrs in
+  Printf.printf "%s " prompt

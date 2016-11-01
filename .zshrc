@@ -2,7 +2,7 @@ export PATH=$PATH:~/local/bin/
 export HISTFILE=~/.zsh_history
 export HISTSIZE=50000
 export SAVEHIST=50000
-
+export FPATH=$FPATH:~/.zsh/completion
 setopt prompt_subst
 autoload -U promptinit
 autoload -U colors && colors
@@ -36,9 +36,12 @@ function get_pwd() {
 }
 
 PROMPT=`oprompt`
-export MANPAGER=/usr/bin/most
+export MANPAGER=most
 
 eval `opam config env`
 precmd () {print -Pn "\e]0;%n:%~ on %m\a"}
 
-alias ls='ls --color=auto'
+alias ls='ls -G'
+
+# added by travis gem
+[ -f /Users/engil/.travis/travis.sh ] && source /Users/engil/.travis/travis.sh
